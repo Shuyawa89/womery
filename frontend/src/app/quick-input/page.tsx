@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { quickMemosApi } from '@/lib/quickMemos'
 
 export default function QuickInputPage() {
@@ -80,8 +81,9 @@ export default function QuickInputPage() {
           <div className="relative">
             <textarea
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => setContent(e.target.value.slice(0, 1000))}
               onKeyDown={handleKeyDown}
+              maxLength={1000}
               placeholder="What's on your mind?"
               className="w-full h-64 p-6 text-lg bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all resize-none text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 dark:placeholder-zinc-500"
               disabled={isSaving}
@@ -146,7 +148,7 @@ export default function QuickInputPage() {
 
         {/* Navigation */}
         <div className="mt-8 pt-8 border-t border-zinc-200 dark:border-zinc-700">
-          <a
+          <Link
             href="/inbox"
             className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2"
           >
@@ -154,7 +156,7 @@ export default function QuickInputPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
             View Inbox
-          </a>
+          </Link>
         </div>
       </div>
     </div>

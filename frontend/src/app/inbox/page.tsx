@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { quickMemosApi } from '@/lib/quickMemos'
 import type { QuickMemo } from '@/types/quickMemo'
 
@@ -124,7 +125,7 @@ export default function InboxPage() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/quick-input"
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
           >
@@ -132,7 +133,7 @@ export default function InboxPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             New Memo
-          </a>
+          </Link>
         </div>
 
         {/* Error */}
@@ -169,7 +170,7 @@ export default function InboxPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Create First Memo
-            </a>
+            </Link>
           </div>
         ) : (
           // Memo List
