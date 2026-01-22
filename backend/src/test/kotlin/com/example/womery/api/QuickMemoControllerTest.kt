@@ -379,8 +379,8 @@ class QuickMemoControllerTest {
     inner class DeleteQuickMemo {
 
         @Test
-        @DisplayName("should delete quick memo and return 204")
-        fun `should delete quick memo and return 204`() {
+        @DisplayName("should soft delete quick memo and return 204")
+        fun `should soft delete quick memo and return 204`() {
             // Given
             val createdId = createQuickMemoAndGetId("Memo to delete")
 
@@ -389,9 +389,11 @@ class QuickMemoControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent)
 
-            // Verify the memo is deleted
-            mockMvc.perform(get("$baseUrl/$createdId"))
-                .andExpect(status().isNotFound)
+            // Verify the memo is soft deleted (still exists but marked as deleted)
+            // Note: The getAll endpoint only returns active memos, so deleted memo won't appear
+            mockMvc.perform(get("$baseUrl"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$").isEmpty)
         }
 
         @Test
@@ -498,13 +500,14 @@ class QuickMemoControllerTest {
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.content").value("Updated content"))
 
-            // Delete
+            // Delete (soft delete)
             mockMvc.perform(delete("$baseUrl/$id"))
                 .andExpect(status().isNoContent)
 
-            // Verify deletion
-            mockMvc.perform(get("$baseUrl/$id"))
-                .andExpect(status().isNotFound)
+            // Verify memo is soft deleted (won't appear in getAll but still exists)
+            mockMvc.perform(get("$baseUrl"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$").isEmpty)
         }
 
         @Test

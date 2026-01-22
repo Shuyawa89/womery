@@ -93,7 +93,7 @@ class QuickMemoServiceTest {
         val memo2 = QuickMemo.create("Second memo")
         val memo3 = QuickMemo.create("Third memo")
         val expectedMemos = listOf(memo1, memo2, memo3)
-        every { quickMemoRepository.findAll() } returns expectedMemos
+        every { quickMemoRepository.findActive() } returns expectedMemos
 
         // Act
         val result = quickMemoService.getAllQuickMemos()
@@ -101,20 +101,20 @@ class QuickMemoServiceTest {
         // Assert
         assertEquals(3, result.size)
         assertEquals(expectedMemos, result)
-        verify(exactly = 1) { quickMemoRepository.findAll() }
+        verify(exactly = 1) { quickMemoRepository.findActive() }
     }
 
     @Test
     fun `getAllQuickMemos should return empty list when no memos exist`() {
         // Arrange
-        every { quickMemoRepository.findAll() } returns emptyList()
+        every { quickMemoRepository.findActive() } returns emptyList()
 
         // Act
         val result = quickMemoService.getAllQuickMemos()
 
         // Assert
         assertEquals(0, result.size)
-        verify(exactly = 1) { quickMemoRepository.findAll() }
+        verify(exactly = 1) { quickMemoRepository.findActive() }
     }
 
     // updateQuickMemo tests
@@ -178,25 +178,27 @@ class QuickMemoServiceTest {
     // deleteQuickMemo tests
 
     @Test
-    fun `deleteQuickMemo should delete existing QuickMemo`() {
+    fun `deleteQuickMemo should soft delete existing QuickMemo`() {
         // Arrange
         val id = UUID.randomUUID()
-        every { quickMemoRepository.existsById(id) } returns true
-        every { quickMemoRepository.delete(id) } returns Unit
+        val existingMemo = QuickMemo.create("Test memo").copy(id = id)
+        val deletedMemo = existingMemo.softDelete()
+        every { quickMemoRepository.findById(id) } returns existingMemo
+        every { quickMemoRepository.save(any()) } returns deletedMemo
 
         // Act
         quickMemoService.deleteQuickMemo(id)
 
         // Assert
-        verify(exactly = 1) { quickMemoRepository.existsById(id) }
-        verify(exactly = 1) { quickMemoRepository.delete(id) }
+        verify(exactly = 1) { quickMemoRepository.findById(id) }
+        verify(exactly = 1) { quickMemoRepository.save(any()) }
     }
 
     @Test
     fun `deleteQuickMemo should throw QuickMemoNotFoundException when memo not found`() {
         // Arrange
         val id = UUID.randomUUID()
-        every { quickMemoRepository.existsById(id) } returns false
+        every { quickMemoRepository.findById(id) } returns null
 
         // Act & Assert
         val exception = assertThrows<QuickMemoNotFoundException> {
@@ -204,8 +206,8 @@ class QuickMemoServiceTest {
         }
 
         assertTrue(exception.message!!.contains(id.toString()))
-        verify(exactly = 1) { quickMemoRepository.existsById(id) }
-        verify(exactly = 0) { quickMemoRepository.delete(id) }
+        verify(exactly = 1) { quickMemoRepository.findById(id) }
+        verify(exactly = 0) { quickMemoRepository.save(any()) }
     }
 
     // Edge case tests
