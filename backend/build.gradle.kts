@@ -49,8 +49,8 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-// Disable plain JAR generation to avoid conflicts in Dockerfile
-tasks.withType<Jar> {
+// Disable plain JAR generation (keep bootJar enabled)
+tasks.named<Jar>("jar") {
     enabled = false
 }
 

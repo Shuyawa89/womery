@@ -243,7 +243,7 @@ class QuickMemoControllerTest {
         }
 
         @Test
-        @DisplayName("should return 404 when ID format is invalid UUID")
+        @DisplayName("should return 400 when ID format is invalid UUID")
         fun `should return 404 when ID format is invalid UUID`() {
             // When & Then
             mockMvc.perform(get("$baseUrl/invalid-uuid-format"))
