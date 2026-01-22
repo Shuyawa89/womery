@@ -24,7 +24,12 @@ class QuickMemoService(
 
     @Transactional(readOnly = true)
     fun getAllQuickMemos(): List<QuickMemo> {
-        return quickMemoRepository.findAll()
+        return quickMemoRepository.findActive()
+    }
+
+    @Transactional(readOnly = true)
+    fun getDeletedQuickMemos(): List<QuickMemo> {
+        return quickMemoRepository.findDeleted()
     }
 
     fun updateQuickMemo(id: UUID, content: String): QuickMemo {
@@ -36,6 +41,22 @@ class QuickMemoService(
     }
 
     fun deleteQuickMemo(id: UUID) {
+        val existingMemo = quickMemoRepository.findById(id)
+            ?: throw QuickMemoNotFoundException("QuickMemo not found: $id")
+
+        val deletedMemo = existingMemo.softDelete()
+        quickMemoRepository.save(deletedMemo)
+    }
+
+    fun restoreQuickMemo(id: UUID): QuickMemo {
+        val existingMemo = quickMemoRepository.findById(id)
+            ?: throw QuickMemoNotFoundException("QuickMemo not found: $id")
+
+        val restoredMemo = existingMemo.restore()
+        return quickMemoRepository.save(restoredMemo)
+    }
+
+    fun permanentlyDeleteQuickMemo(id: UUID) {
         if (!quickMemoRepository.existsById(id)) {
             throw QuickMemoNotFoundException("QuickMemo not found: $id")
         }

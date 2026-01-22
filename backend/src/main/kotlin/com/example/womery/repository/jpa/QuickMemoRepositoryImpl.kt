@@ -25,6 +25,18 @@ class QuickMemoRepositoryImpl(
             .sortedByDescending { it.createdAt }
     }
 
+    override fun findActive(): List<QuickMemo> {
+        return jpaRepository.findActiveEntities()
+            .map { it.toDomain() }
+            .sortedByDescending { it.createdAt }
+    }
+
+    override fun findDeleted(): List<QuickMemo> {
+        return jpaRepository.findDeletedEntities()
+            .map { it.toDomain() }
+            .sortedByDescending { it.deletedAt }
+    }
+
     override fun delete(id: UUID) {
         jpaRepository.deleteById(id)
     }
