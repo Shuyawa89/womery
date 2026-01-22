@@ -9,8 +9,8 @@ export default function QuickInputPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enterキーで保存（Shift+Enterは改行として許可）
-    if (e.key === 'Enter' && !e.shiftKey && !isSaving) {
+    // Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux) to save
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !isSaving) {
       e.preventDefault()
       handleSubmit(e)
     }
@@ -104,7 +104,7 @@ export default function QuickInputPage() {
           {/* Submit Button */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-zinc-500 dark:text-zinc-400">
-              Press Enter to save (Shift+Enter for new line)
+              Press Cmd+Enter to save (Ctrl+Enter on Windows/Linux)
             </div>
 
             <button

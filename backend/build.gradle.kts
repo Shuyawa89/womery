@@ -12,9 +12,6 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
-// Dependency versions
-val flywayVersion = "10.6.0"
-
 java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
@@ -35,8 +32,8 @@ dependencies {
 
     // Database
     runtimeOnly("org.postgresql:postgresql")
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    implementation("org.flywaydb:flyway-core:10.6.0")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.6.0")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -50,6 +47,11 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "21"
     }
+}
+
+// Disable plain JAR generation to avoid conflicts in Dockerfile
+tasks.withType<Jar> {
+    enabled = false
 }
 
 tasks.withType<Test> {
