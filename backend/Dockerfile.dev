@@ -2,13 +2,11 @@ FROM gradle:8.5-jdk21
 
 WORKDIR /app
 
-COPY gradlew .
-COPY gradle gradle
 COPY build.gradle.kts settings.gradle.kts ./
-RUN ./gradlew dependencies --no-daemon
+RUN gradle dependencies --no-daemon
 
 COPY src src
 
 EXPOSE 8080
 
-CMD ["./gradlew", "bootRun"]
+CMD ["gradle", "bootRun", "--no-daemon"]

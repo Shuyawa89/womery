@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    jacoco
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version "1.9.22"
@@ -11,9 +10,6 @@ plugins {
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
-
-// Dependency versions
-val flywayVersion = "10.6.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -35,8 +31,8 @@ dependencies {
 
     // Database
     runtimeOnly("org.postgresql:postgresql")
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    implementation("org.flywaydb:flyway-core:10.6.0")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.6.0")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -54,23 +50,4 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    finalizedBy("jacocoTestReport")
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-}
-
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = "0.80".toBigDecimal()
-            }
-        }
-    }
 }

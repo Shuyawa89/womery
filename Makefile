@@ -1,4 +1,4 @@
-.PHONY: up down build test logs backend-logs frontend-logs db-logs backend-restart db-shell clean
+.PHONY: up down build test logs backend-test backend-logs frontend-logs db-logs
 
 # Start all services
 up:
