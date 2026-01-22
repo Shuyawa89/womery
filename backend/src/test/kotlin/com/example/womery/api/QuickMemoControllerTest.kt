@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -23,16 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
 
-@SpringBootTest(
-    properties = [
-        "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
-        "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.username=sa",
-        "spring.jpa.hibernate.ddl-auto=create-drop",
-        "spring.flyway.enabled=false",
-        "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"
-    ]
-)
+@SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("QuickMemoController Integration Tests")
@@ -243,8 +234,8 @@ class QuickMemoControllerTest {
         }
 
         @Test
-        @DisplayName("should return 404 when ID format is invalid UUID")
-        fun `should return 404 when ID format is invalid UUID`() {
+        @DisplayName("should return 400 when ID format is invalid UUID")
+        fun `should return 400 when ID format is invalid UUID`() {
             // When & Then
             mockMvc.perform(get("$baseUrl/invalid-uuid-format"))
                 .andDo(print())
@@ -408,8 +399,8 @@ class QuickMemoControllerTest {
         }
 
         @Test
-        @DisplayName("should return 404 when deleting with invalid ID format")
-        fun `should return 404 when deleting with invalid ID format`() {
+        @DisplayName("should return 400 when deleting with invalid ID format")
+        fun `should return 400 when deleting with invalid ID format`() {
             // When & Then
             mockMvc.perform(delete("$baseUrl/invalid-uuid-format"))
                 .andDo(print())
