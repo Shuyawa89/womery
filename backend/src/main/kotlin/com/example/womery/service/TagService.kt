@@ -62,7 +62,7 @@ class TagService(
     }
 
     fun deleteTag(id: UUID) {
-        if (!tagRepository.findById(id)) {
+        if (tagRepository.findById(id) == null) {
             throw TagNotFoundException("Tag not found: $id")
         }
         tagRepository.delete(id)
