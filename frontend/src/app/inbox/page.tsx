@@ -162,7 +162,7 @@ export default function InboxPage() {
             <p className="text-zinc-600 dark:text-zinc-400 mb-4">
               Start capturing your thoughts
             </p>
-            <a
+            <Link
               href="/quick-input"
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
