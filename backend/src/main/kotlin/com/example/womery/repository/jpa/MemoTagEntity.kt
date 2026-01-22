@@ -38,10 +38,14 @@ class MemoTagEntity(
 
 // Composite key class for MemoTag
 @java.io.Serializable
-data class MemoTagId(
+class MemoTagId(
     val memoId: UUID? = null,
     val tagId: UUID? = null
 ) : java.io.Serializable {
+    // No-arg constructor for JPA
+    @Suppress("UNUSED")
+    private constructor() : this(null, null)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is MemoTagId) return false
@@ -52,5 +56,9 @@ data class MemoTagId(
         var result = memoId?.hashCode() ?: 0
         result = 31 * result + (tagId?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "MemoTagId(memoId=$memoId, tagId=$tagId)"
     }
 }

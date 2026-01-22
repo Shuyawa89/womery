@@ -44,7 +44,7 @@ export const quickMemosApi = {
   },
 
   async addTagToMemo(id: string, tagId: string): Promise<Tag[]> {
-    return api.post<Tag[]>(`${QUICK_MEMOS_PATH}/${id}/tags/${tagId}`, {})
+    return api.post<Tag[], Record<string, never>>(`${QUICK_MEMOS_PATH}/${id}/tags/${tagId}`, {})
   },
 
   async removeTagFromMemo(id: string, tagId: string): Promise<Tag[]> {
