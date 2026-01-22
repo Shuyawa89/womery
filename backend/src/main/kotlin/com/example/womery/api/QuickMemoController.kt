@@ -40,6 +40,12 @@ class QuickMemoController(
         return ResponseEntity.ok(quickMemos.map { QuickMemoResponse.from(it) })
     }
 
+    @GetMapping("/trash")
+    fun getDeletedQuickMemos(): ResponseEntity<List<QuickMemoResponse>> {
+        val quickMemos = quickMemoService.getDeletedQuickMemos()
+        return ResponseEntity.ok(quickMemos.map { QuickMemoResponse.from(it) })
+    }
+
     @GetMapping("/{id}")
     fun getQuickMemo(@PathVariable id: UUID): ResponseEntity<QuickMemoResponse> {
         val quickMemo = quickMemoService.getQuickMemo(id)
@@ -56,8 +62,20 @@ class QuickMemoController(
     }
 
     @DeleteMapping("/{id}")
-    fun deleteQuickMemo(@PathVariable id: UUID): ResponseEntity<Void> {
-        quickMemoService.deleteQuickMemo(id)
+    fun softDeleteQuickMemo(@PathVariable id: UUID): ResponseEntity<QuickMemoResponse> {
+        val quickMemo = quickMemoService.softDeleteQuickMemo(id)
+        return ResponseEntity.ok(QuickMemoResponse.from(quickMemo))
+    }
+
+    @PostMapping("/{id}/restore")
+    fun restoreQuickMemo(@PathVariable id: UUID): ResponseEntity<QuickMemoResponse> {
+        val quickMemo = quickMemoService.restoreQuickMemo(id)
+        return ResponseEntity.ok(QuickMemoResponse.from(quickMemo))
+    }
+
+    @DeleteMapping("/{id}/permanent")
+    fun permanentlyDeleteQuickMemo(@PathVariable id: UUID): ResponseEntity<Void> {
+        quickMemoService.permanentlyDeleteQuickMemo(id)
         return ResponseEntity.noContent().build()
     }
 }

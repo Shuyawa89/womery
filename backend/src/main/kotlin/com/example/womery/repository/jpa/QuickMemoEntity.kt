@@ -22,13 +22,17 @@ class QuickMemoEntity(
     val createdAt: Instant,
 
     @Column(name = "updated_at", nullable = false)
-    var updatedAt: Instant
+    var updatedAt: Instant,
+
+    @Column(name = "deleted_at")
+    var deletedAt: Instant? = null
 ) {
     fun toDomain(): QuickMemo = QuickMemo(
         id = id,
         content = content,
         createdAt = createdAt,
-        updatedAt = updatedAt
+        updatedAt = updatedAt,
+        deletedAt = deletedAt
     )
 
     companion object {
@@ -36,7 +40,8 @@ class QuickMemoEntity(
             id = quickMemo.id,
             content = quickMemo.content,
             createdAt = quickMemo.createdAt,
-            updatedAt = quickMemo.updatedAt
+            updatedAt = quickMemo.updatedAt,
+            deletedAt = quickMemo.deletedAt
         )
     }
 }

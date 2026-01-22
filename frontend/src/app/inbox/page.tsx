@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { quickMemosApi } from '@/lib/quickMemos'
 import type { QuickMemo } from '@/types/quickMemo'
 
@@ -37,7 +38,7 @@ export default function InboxPage() {
     setDeletingId(id)
 
     try {
-      await quickMemosApi.delete(id)
+      await quickMemosApi.softDelete(id)
       setMemos((prev) => prev.filter((memo) => memo.id !== id))
     } catch (err) {
       setError('Failed to delete memo')
@@ -80,15 +81,26 @@ export default function InboxPage() {
             </p>
           </div>
 
-          <a
-            href="/quick-input"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            New Memo
-          </a>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/trash"
+              className="px-4 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Trash
+            </Link>
+            <Link
+              href="/quick-input"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              New Memo
+            </Link>
+          </div>
         </div>
 
         {/* Error */}
@@ -117,7 +129,7 @@ export default function InboxPage() {
             <p className="text-zinc-600 dark:text-zinc-400 mb-4">
               Start capturing your thoughts
             </p>
-            <a
+            <Link
               href="/quick-input"
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
@@ -125,7 +137,7 @@ export default function InboxPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Create First Memo
-            </a>
+            </Link>
           </div>
         ) : (
           // Memo List

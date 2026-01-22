@@ -13,12 +13,16 @@ data class QuickMemo(
     val id: UUID,
     val content: String,
     val createdAt: Instant,
-    val updatedAt: Instant
+    val updatedAt: Instant,
+    val deletedAt: Instant? = null
 ) {
     init {
         require(content.isNotBlank()) { "Content cannot be blank" }
         require(content.length <= 1000) { "Content cannot exceed 1000 characters" }
     }
+
+    val isDeleted: Boolean
+        get() = deletedAt != null
 
     companion object {
         fun create(content: String): QuickMemo {
@@ -27,7 +31,8 @@ data class QuickMemo(
                 id = UUID.randomUUID(),
                 content = content.trim(),
                 createdAt = now,
-                updatedAt = now
+                updatedAt = now,
+                deletedAt = null
             )
         }
     }
@@ -36,6 +41,18 @@ data class QuickMemo(
         return copy(
             content = newContent.trim(),
             updatedAt = Instant.now()
+        )
+    }
+
+    fun softDelete(): QuickMemo {
+        return copy(
+            deletedAt = Instant.now()
+        )
+    }
+
+    fun restore(): QuickMemo {
+        return copy(
+            deletedAt = null
         )
     }
 }
