@@ -8,15 +8,7 @@ export default function QuickInputPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enterキーで保存（Shift+Enterは改行として許可）
-    if (e.key === 'Enter' && !e.shiftKey && !isSaving) {
-      e.preventDefault()
-      handleSubmit(e)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent | React.KeyboardEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!content.trim()) {
@@ -81,7 +73,6 @@ export default function QuickInputPage() {
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              onKeyDown={handleKeyDown}
               placeholder="What's on your mind?"
               className="w-full h-64 p-6 text-lg bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all resize-none text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 dark:placeholder-zinc-500"
               disabled={isSaving}
@@ -104,7 +95,7 @@ export default function QuickInputPage() {
           {/* Submit Button */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-zinc-500 dark:text-zinc-400">
-              Press Enter to save (Shift+Enter for new line)
+              Press Enter to save (Cmd+Enter for new line)
             </div>
 
             <button
