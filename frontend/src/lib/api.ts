@@ -54,19 +54,13 @@ export const api = {
     return handleResponse<T>(response)
   },
 
-  async delete(path: string): Promise<void> {
+  async delete<T = void>(path: string): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({}))
-      throw new ApiError(
-        response.status,
-        errorBody.message || `HTTP error ${response.status}`
-      )
-    }
+    return handleResponse<T>(response)
   },
 }
