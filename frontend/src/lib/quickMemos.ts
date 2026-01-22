@@ -15,6 +15,10 @@ export const quickMemosApi = {
     return api.get<QuickMemo[]>(QUICK_MEMOS_PATH)
   },
 
+  async getTrash(): Promise<QuickMemo[]> {
+    return api.get<QuickMemo[]>(`${QUICK_MEMOS_PATH}/trash`)
+  },
+
   async getById(id: string): Promise<QuickMemo> {
     return api.get<QuickMemo>(`${QUICK_MEMOS_PATH}/${id}`)
   },
@@ -30,8 +34,16 @@ export const quickMemosApi = {
     )
   },
 
-  async delete(id: string): Promise<void> {
-    return api.delete(`${QUICK_MEMOS_PATH}/${id}`)
+  async softDelete(id: string): Promise<QuickMemo> {
+    return api.delete<QuickMemo>(`${QUICK_MEMOS_PATH}/${id}`)
+  },
+
+  async restore(id: string): Promise<QuickMemo> {
+    return api.post<QuickMemo>(`${QUICK_MEMOS_PATH}/${id}/restore`, {})
+  },
+
+  async permanentlyDelete(id: string): Promise<void> {
+    return api.delete(`${QUICK_MEMOS_PATH}/${id}/permanent`)
   },
 
   // Tag-related methods

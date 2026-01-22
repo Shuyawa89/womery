@@ -9,6 +9,7 @@ data class QuickMemoResponse(
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
+    val deletedAt: Instant? = null,
     val tags: List<TagResponse> = emptyList()
 ) {
     companion object {
@@ -17,6 +18,7 @@ data class QuickMemoResponse(
             content = quickMemo.content,
             createdAt = quickMemo.createdAt,
             updatedAt = quickMemo.updatedAt,
+            deletedAt = quickMemo.deletedAt,
             tags = tags
         )
     }
