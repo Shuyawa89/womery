@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { quickMemosApi } from '@/lib/quickMemos'
 import type { QuickMemo } from '@/types/quickMemo'
 
@@ -9,6 +9,18 @@ export default function InboxPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Filter memos based on search query
+  const filteredMemos = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return memos
+    }
+    const query = searchQuery.toLowerCase()
+    return memos.filter((memo) =>
+      memo.content.toLowerCase().includes(query)
+    )
+  }, [memos, searchQuery])
 
   useEffect(() => {
     loadMemos()
@@ -66,6 +78,10 @@ export default function InboxPage() {
     })
   }
 
+  const handleClearSearch = () => {
+    setSearchQuery('')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-black dark:to-zinc-900">
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -76,7 +92,8 @@ export default function InboxPage() {
               Inbox
             </h1>
             <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-              {memos.length} {memos.length === 1 ? 'memo' : 'memos'}
+              {filteredMemos.length} {filteredMemos.length === 1 ? 'memo' : 'memos'}
+              {searchQuery && ` of ${memos.length} total`}
             </p>
           </div>
 
@@ -91,6 +108,35 @@ export default function InboxPage() {
           </a>
         </div>
 
+        {/* Search Box */}
+        <div className="mb-6">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search memos..."
+              className="w-full pl-10 pr-10 py-3 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-600 rounded-lg text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+                title="Clear search"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Error */}
         {error && (
           <div className="mb-4 p-4 bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded-lg">
@@ -103,7 +149,7 @@ export default function InboxPage() {
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-        ) : memos.length === 0 ? (
+        ) : filteredMemos.length === 0 ? (
           // Empty State
           <div className="text-center py-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full mb-4">
@@ -130,7 +176,7 @@ export default function InboxPage() {
         ) : (
           // Memo List
           <div className="space-y-4">
-            {memos.map((memo) => (
+            {filteredMemos.map((memo) => (
               <div
                 key={memo.id}
                 className="bg-white dark:bg-zinc-800 rounded-xl p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-md transition-shadow"
