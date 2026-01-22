@@ -8,7 +8,15 @@ export default function QuickInputPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux) to save
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !isSaving) {
+      e.preventDefault()
+      handleSubmit(e)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent | React.KeyboardEvent) => {
     e.preventDefault()
 
     if (!content.trim()) {
@@ -73,6 +81,7 @@ export default function QuickInputPage() {
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="What's on your mind?"
               className="w-full h-64 p-6 text-lg bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 rounded-xl focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all resize-none text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 dark:placeholder-zinc-500"
               disabled={isSaving}
@@ -95,7 +104,7 @@ export default function QuickInputPage() {
           {/* Submit Button */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-zinc-500 dark:text-zinc-400">
-              Press Enter to save (Cmd+Enter for new line)
+              Press Cmd+Enter to save (Ctrl+Enter on Windows/Linux)
             </div>
 
             <button

@@ -49,6 +49,11 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+// Disable plain JAR generation to avoid conflicts in Dockerfile
+tasks.withType<Jar> {
+    enabled = false
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
     finalizedBy("jacocoTestReport")
