@@ -9,8 +9,7 @@ export default function InboxPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editContent, setEditContent] = useState('')
+  const [editingMemo, setEditingMemo] = useState<{ id: string; content: string } | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -50,38 +49,34 @@ export default function InboxPage() {
     }
   }
 
-  const handleEditStart = (id: string, content: string) => {
-    // Prevent switching edits while an update is in progress for the current memo
-    if (updatingId === editingId) {
-      return
-    }
-    setEditingId(id)
-    setEditContent(content)
-  }
-
   const handleEditCancel = () => {
     // Prevent cancel if an update is in progress
     if (updatingId !== null) {
       return
     }
-    setEditingId(null)
-    setEditContent('')
+    setEditingMemo(null)
   }
 
   const handleEditSave = async (id: string) => {
-    if (!editContent.trim()) {
+    if (!editingMemo?.content.trim()) {
       setError('Content cannot be empty')
+      return
+    }
+
+    // Check if content has actually changed
+    const originalMemo = memos.find((memo) => memo.id === id)
+    if (originalMemo && originalMemo.content === editingMemo.content) {
+      handleEditCancel()
       return
     }
 
     setUpdatingId(id)
 
     try {
-      const updated = await quickMemosApi.update(id, { content: editContent })
+      const updated = await quickMemosApi.update(id, { content: editingMemo.content })
       setMemos((prev) => prev.map((memo) => (memo.id === id ? updated : memo)))
       // Only clear edit state if the user hasn't switched to editing another memo
-      setEditingId((currentEditingId) => (currentEditingId === id ? null : currentEditingId))
-      setEditContent((currentContent) => (editingId === id ? '' : currentContent))
+      setEditingMemo((current) => (current?.id === id ? null : current))
     } catch (err) {
       setError('Failed to update memo')
       console.error('Error updating memo:', err)
@@ -188,12 +183,12 @@ export default function InboxPage() {
                 key={memo.id}
                 className="bg-white dark:bg-zinc-800 rounded-xl p-6 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-md transition-shadow"
               >
-                {editingId === memo.id ? (
+                {editingMemo?.id === memo.id ? (
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <textarea
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
+                        value={editingMemo.content}
+                        onChange={(e) => setEditingMemo((prev) => (prev ? { ...prev, content: e.target.value } : null))}
                         onKeyDown={(e) => handleKeyDown(e, memo.id)}
                         className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 rounded-lg text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                         rows={4}
@@ -268,7 +263,7 @@ export default function InboxPage() {
 
                     <div className="flex gap-1">
                       <button
-                        onClick={() => handleEditStart(memo.id, memo.content)}
+                        onClick={() => setEditingMemo({ id: memo.id, content: memo.content })}
                         className="flex-shrink-0 p-2 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                         title="Edit memo"
                       >
