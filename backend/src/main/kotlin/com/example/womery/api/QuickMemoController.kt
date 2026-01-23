@@ -1,9 +1,12 @@
 package com.example.womery.api
 
 import com.example.womery.api.dto.request.CreateQuickMemoRequest
+import com.example.womery.api.dto.request.SetTagsRequest
 import com.example.womery.api.dto.request.UpdateQuickMemoRequest
 import com.example.womery.api.dto.response.QuickMemoResponse
+import com.example.womery.api.dto.response.TagResponse
 import com.example.womery.service.QuickMemoService
+import com.example.womery.service.TagService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,7 +25,8 @@ import java.util.UUID
 @RequestMapping("/api/quick-memos")
 @CrossOrigin(origins = ["http://localhost:3000"])
 class QuickMemoController(
-    private val quickMemoService: QuickMemoService
+    private val quickMemoService: QuickMemoService,
+    private val tagService: TagService
 ) {
     @PostMapping
     fun createQuickMemo(
@@ -59,5 +63,43 @@ class QuickMemoController(
     fun deleteQuickMemo(@PathVariable id: UUID): ResponseEntity<Void> {
         quickMemoService.deleteQuickMemo(id)
         return ResponseEntity.noContent().build()
+    }
+
+    // Tag-related endpoints
+    @GetMapping("/{id}/tags")
+    fun getMemoTags(@PathVariable id: UUID): ResponseEntity<List<TagResponse>> {
+        val tags = tagService.getTagsForMemo(id)
+        return ResponseEntity.ok(tags.map { TagResponse.from(it) })
+    }
+
+    @PutMapping("/{id}/tags")
+    fun setMemoTags(
+        @PathVariable id: UUID,
+        @Valid @RequestBody request: SetTagsRequest
+    ): ResponseEntity<List<TagResponse>> {
+        val tagIds = request.tagIds.map { UUID.fromString(it) }
+        tagService.setTagsForMemo(id, tagIds)
+        val tags = tagService.getTagsForMemo(id)
+        return ResponseEntity.ok(tags.map { TagResponse.from(it) })
+    }
+
+    @PostMapping("/{id}/tags/{tagId}")
+    fun addTagToMemo(
+        @PathVariable id: UUID,
+        @PathVariable tagId: UUID
+    ): ResponseEntity<List<TagResponse>> {
+        tagService.addTagToMemo(id, tagId)
+        val tags = tagService.getTagsForMemo(id)
+        return ResponseEntity.ok(tags.map { TagResponse.from(it) })
+    }
+
+    @DeleteMapping("/{id}/tags/{tagId}")
+    fun removeTagFromMemo(
+        @PathVariable id: UUID,
+        @PathVariable tagId: UUID
+    ): ResponseEntity<List<TagResponse>> {
+        tagService.removeTagFromMemo(id, tagId)
+        val tags = tagService.getTagsForMemo(id)
+        return ResponseEntity.ok(tags.map { TagResponse.from(it) })
     }
 }
