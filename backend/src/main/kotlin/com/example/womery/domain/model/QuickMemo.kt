@@ -13,7 +13,8 @@ data class QuickMemo(
     val id: UUID,
     val content: String,
     val createdAt: Instant,
-    val updatedAt: Instant
+    val updatedAt: Instant,
+    val deletedAt: Instant? = null
 ) {
     init {
         require(content.isNotBlank()) { "Content cannot be blank" }
@@ -32,10 +33,25 @@ data class QuickMemo(
         }
     }
 
+    val isDeleted: Boolean
+        get() = deletedAt != null
+
     fun updateContent(newContent: String): QuickMemo {
         return copy(
             content = newContent.trim(),
             updatedAt = Instant.now()
+        )
+    }
+
+    fun softDelete(): QuickMemo {
+        return copy(
+            deletedAt = Instant.now()
+        )
+    }
+
+    fun restore(): QuickMemo {
+        return copy(
+            deletedAt = null
         )
     }
 }

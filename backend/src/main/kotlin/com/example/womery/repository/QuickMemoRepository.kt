@@ -13,6 +13,8 @@ interface QuickMemoRepository {
     fun save(quickMemo: QuickMemo): QuickMemo
     fun findById(id: UUID): QuickMemo?
     fun findAll(): List<QuickMemo>
+    fun findActive(): List<QuickMemo>
+    fun findDeleted(): List<QuickMemo>
     fun delete(id: UUID)
     fun existsById(id: UUID): Boolean
 }

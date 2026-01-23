@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -62,6 +63,24 @@ class QuickMemoController(
     @DeleteMapping("/{id}")
     fun deleteQuickMemo(@PathVariable id: UUID): ResponseEntity<Void> {
         quickMemoService.deleteQuickMemo(id)
+        return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/deleted")
+    fun getDeletedQuickMemos(): ResponseEntity<List<QuickMemoResponse>> {
+        val quickMemos = quickMemoService.getDeletedQuickMemos()
+        return ResponseEntity.ok(quickMemos.map { QuickMemoResponse.from(it) })
+    }
+
+    @PatchMapping("/{id}/restore")
+    fun restoreQuickMemo(@PathVariable id: UUID): ResponseEntity<QuickMemoResponse> {
+        val quickMemo = quickMemoService.restoreQuickMemo(id)
+        return ResponseEntity.ok(QuickMemoResponse.from(quickMemo))
+    }
+
+    @DeleteMapping("/{id}/permanent")
+    fun permanentlyDeleteQuickMemo(@PathVariable id: UUID): ResponseEntity<Void> {
+        quickMemoService.permanentlyDeleteQuickMemo(id)
         return ResponseEntity.noContent().build()
     }
 

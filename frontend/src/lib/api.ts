@@ -54,6 +54,16 @@ export const api = {
     return handleResponse<T>(response)
   },
 
+  async patch<T>(path: string): Promise<T> {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    return handleResponse<T>(response)
+  },
+
   async delete<T = void>(path: string): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method: 'DELETE',

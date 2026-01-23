@@ -34,6 +34,18 @@ export const quickMemosApi = {
     return api.delete(`${QUICK_MEMOS_PATH}/${id}`)
   },
 
+  async getDeleted(): Promise<QuickMemo[]> {
+    return api.get<QuickMemo[]>(`${QUICK_MEMOS_PATH}/deleted`)
+  },
+
+  async restore(id: string): Promise<QuickMemo> {
+    return api.patch<QuickMemo>(`${QUICK_MEMOS_PATH}/${id}/restore`)
+  },
+
+  async permanentlyDelete(id: string): Promise<void> {
+    return api.delete(`${QUICK_MEMOS_PATH}/${id}/permanent`)
+  },
+
   // Tag-related methods
   async getMemoTags(id: string): Promise<Tag[]> {
     return api.get<Tag[]>(`${QUICK_MEMOS_PATH}/${id}/tags`)

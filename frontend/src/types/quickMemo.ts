@@ -3,6 +3,7 @@ export interface QuickMemo {
   content: string
   createdAt: string
   updatedAt: string
+  deletedAt: string | null
   tags: Tag[]
 }
 
