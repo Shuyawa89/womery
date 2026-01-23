@@ -51,7 +51,7 @@ class TagController(
     }
 
     @PostMapping("/get-or-create")
-    fun getOrCreateTag(@RequestBody request: CreateTagRequest): ResponseEntity<TagResponse> {
+    fun getOrCreateTag(@Valid @RequestBody request: CreateTagRequest): ResponseEntity<TagResponse> {
         val tag = tagService.getOrCreateTag(request.name)
         return ResponseEntity.ok(TagResponse.from(tag))
     }

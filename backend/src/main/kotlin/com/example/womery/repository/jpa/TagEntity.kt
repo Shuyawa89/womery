@@ -13,13 +13,13 @@ import java.util.UUID
 class TagEntity(
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    val id: UUID,
+    val id: UUID = UUID(0, 0),
 
     @Column(name = "name", nullable = false, length = 100, unique = true)
-    var name: String,
+    var name: String = "",
 
     @Column(name = "created_at", updatable = false, nullable = false)
-    val createdAt: Instant
+    val createdAt: Instant = Instant.EPOCH
 ) {
     fun toDomain(): Tag = Tag(
         id = id,
