@@ -37,7 +37,6 @@ class MemoTagEntity(
 }
 
 // Composite key class for MemoTag
-@java.io.Serializable
 class MemoTagId(
     val memoId: UUID? = null,
     val tagId: UUID? = null
