@@ -9,15 +9,17 @@ data class QuickMemoResponse(
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val deletedAt: Instant? = null
+    val deletedAt: Instant? = null,
+    val tags: List<TagResponse> = emptyList()
 ) {
     companion object {
-        fun from(quickMemo: QuickMemo): QuickMemoResponse = QuickMemoResponse(
+        fun from(quickMemo: QuickMemo, tags: List<TagResponse> = emptyList()): QuickMemoResponse = QuickMemoResponse(
             id = quickMemo.id,
             content = quickMemo.content,
             createdAt = quickMemo.createdAt,
             updatedAt = quickMemo.updatedAt,
-            deletedAt = quickMemo.deletedAt
+            deletedAt = quickMemo.deletedAt,
+            tags = tags
         )
     }
 }
