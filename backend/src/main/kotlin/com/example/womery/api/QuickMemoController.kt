@@ -96,6 +96,11 @@ class QuickMemoController(
         @PathVariable id: UUID,
         @Valid @RequestBody request: SetTagsRequest
     ): ResponseEntity<List<TagResponse>> {
+        // Validate UUID format for each tag ID
+        if (!request.validate()) {
+            return ResponseEntity.badRequest().build()
+        }
+
         val tagIds = request.tagIds.map { UUID.fromString(it) }
         tagService.setTagsForMemo(id, tagIds)
         val tags = tagService.getTagsForMemo(id)

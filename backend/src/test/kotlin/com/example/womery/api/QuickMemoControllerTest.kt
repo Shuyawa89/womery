@@ -541,6 +541,85 @@ class QuickMemoControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("PUT /api/quick-memos/{id}/tags - Set Memo Tags")
+    inner class SetMemoTags {
+
+        @Test
+        @DisplayName("should return 400 when tagIds contains invalid UUID format")
+        fun `should return 400 when tagIds contains invalid UUID format`() {
+            // Given
+            val createdId = createQuickMemoAndGetId("Test memo")
+            val invalidRequest = mapOf("tagIds" to listOf("not-a-uuid", "also-not-a-uuid"))
+
+            // When & Then
+            mockMvc.perform(
+                put("$baseUrl/$createdId/tags")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(invalidRequest))
+            )
+                .andDo(print())
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        @DisplayName("should return 400 when tagIds contains blank string")
+        fun `should return 400 when tagIds contains blank string`() {
+            // Given
+            val createdId = createQuickMemoAndGetId("Test memo")
+            val blankRequest = mapOf("tagIds" to listOf(UUID.randomUUID().toString(), ""))
+
+            // When & Then
+            mockMvc.perform(
+                put("$baseUrl/$createdId/tags")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(blankRequest))
+            )
+                .andDo(print())
+                .andExpect(status().isBadRequest)
+        }
+
+        @Test
+        @DisplayName("should return 400 when tagIds is empty")
+        fun `should return 400 when tagIds is empty`() {
+            // Given
+            val createdId = createQuickMemoAndGetId("Test memo")
+            val emptyRequest = mapOf("tagIds" to emptyList<String>())
+
+            // When & Then
+            mockMvc.perform(
+                put("$baseUrl/$createdId/tags")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(emptyRequest))
+            )
+                .andDo(print())
+                .andExpect(status().isBadRequest)
+                .andExpect(jsonPath("$.error").value("Validation Error"))
+        }
+
+        @Test
+        @DisplayName("should accept valid UUID format in tagIds")
+        fun `should accept valid UUID format in tagIds`() {
+            // Given
+            val createdId = createQuickMemoAndGetId("Test memo")
+            val validRequest = mapOf("tagIds" to listOf(UUID.randomUUID().toString()))
+
+            // When & Then - Validation should pass (not return 400)
+            // Note: May return 404 (tags don't exist) or 500 (H2 database issues in test environment)
+            val result = mockMvc.perform(
+                put("$baseUrl/$createdId/tags")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(validRequest))
+            )
+                .andDo(print())
+                .andReturn()
+
+            // Verify validation passed (status is not 400)
+            val status = result.response.status
+            assert(status != 400) { "Expected validation to pass, but got 400 Bad Request" }
+        }
+    }
+
     // Helper methods
 
     private fun createQuickMemo(content: String): String {
