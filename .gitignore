@@ -16,7 +16,6 @@ Thumbs.db
 # Backend (Kotlin/Gradle)
 backend/build/
 backend/.gradle/
-backend/gradle-app.setting
 backend/.idea/
 backend/*.iml
 backend/out/
@@ -29,7 +28,7 @@ frontend/out/
 frontend/dist/
 frontend/.turbo/
 frontend/.pnpm-store/
-frontend.pnpm-store.yaml
+frontend/pnpm-lock.yaml
 frontend/.env*.local
 
 # Environment

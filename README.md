@@ -84,7 +84,7 @@ womery/
 │       ├── api/      # REST Controllers
 │       ├── service/  # Business Logic
 │       ├── domain/   # Domain Models
-│       └── repository/# Data Access
+│       └── repository/ # Data Access
 ├── frontend/         # Next.js + TypeScript
 │   ├── app/         # App Router
 │   ├── components/  # React Components
