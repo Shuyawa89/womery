@@ -51,11 +51,19 @@ export default function InboxPage() {
   }
 
   const handleEditStart = (id: string, content: string) => {
+    // Prevent switching edits while an update is in progress for the current memo
+    if (updatingId === editingId) {
+      return
+    }
     setEditingId(id)
     setEditContent(content)
   }
 
   const handleEditCancel = () => {
+    // Prevent cancel if an update is in progress
+    if (updatingId !== null) {
+      return
+    }
     setEditingId(null)
     setEditContent('')
   }
@@ -71,8 +79,9 @@ export default function InboxPage() {
     try {
       const updated = await quickMemosApi.update(id, { content: editContent })
       setMemos((prev) => prev.map((memo) => (memo.id === id ? updated : memo)))
-      setEditingId(null)
-      setEditContent('')
+      // Only clear edit state if the user hasn't switched to editing another memo
+      setEditingId((currentEditingId) => (currentEditingId === id ? null : currentEditingId))
+      setEditContent((currentContent) => (editingId === id ? '' : currentContent))
     } catch (err) {
       setError('Failed to update memo')
       console.error('Error updating memo:', err)
