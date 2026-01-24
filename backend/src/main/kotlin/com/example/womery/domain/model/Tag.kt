@@ -1,5 +1,6 @@
 package com.example.womery.domain.model
 
+import java.time.Clock
 import java.time.Instant
 import java.util.UUID
 
@@ -19,8 +20,8 @@ data class Tag(
     }
 
     companion object {
-        fun create(name: String): Tag {
-            val now = Instant.now()
+        fun create(name: String, clock: Clock = Clock.systemDefaultZone()): Tag {
+            val now = Instant.now(clock)
             return Tag(
                 id = UUID.randomUUID(),
                 name = name.trim(),
