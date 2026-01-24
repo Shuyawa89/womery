@@ -24,6 +24,11 @@ class TagRepositoryImpl(
             .map { it.toDomain() }
     }
 
+    override fun findAllByIds(ids: List<UUID>): List<Tag> {
+        if (ids.isEmpty()) return emptyList()
+        return jpaRepository.findAllById(ids).map { it.toDomain() }
+    }
+
     override fun findByName(name: String): Tag? {
         return jpaRepository.findByName(name)?.toDomain()
     }
