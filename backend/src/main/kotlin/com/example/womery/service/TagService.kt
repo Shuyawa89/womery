@@ -1,6 +1,8 @@
 package com.example.womery.service
 
 import com.example.womery.domain.model.Tag
+import com.example.womery.exception.TagAlreadyExistsException
+import com.example.womery.exception.TagNotFoundException
 import com.example.womery.repository.MemoTagRepository
 import com.example.womery.repository.TagRepository
 import org.springframework.stereotype.Service
@@ -75,6 +77,3 @@ class TagService(
         }
     }
 }
-
-class TagNotFoundException(message: String) : RuntimeException(message)
-class TagAlreadyExistsException(message: String) : RuntimeException(message)

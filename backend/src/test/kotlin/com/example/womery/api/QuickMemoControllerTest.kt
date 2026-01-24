@@ -1,6 +1,6 @@
 package com.example.womery.api
 
-import com.example.womery.service.QuickMemoNotFoundException
+import com.example.womery.exception.QuickMemoNotFoundException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

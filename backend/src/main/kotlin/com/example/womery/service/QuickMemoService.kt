@@ -1,6 +1,7 @@
 package com.example.womery.service
 
 import com.example.womery.domain.model.QuickMemo
+import com.example.womery.exception.QuickMemoNotFoundException
 import com.example.womery.repository.QuickMemoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -63,5 +64,3 @@ class QuickMemoService(
         quickMemoRepository.delete(id)
     }
 }
-
-class QuickMemoNotFoundException(message: String) : RuntimeException(message)

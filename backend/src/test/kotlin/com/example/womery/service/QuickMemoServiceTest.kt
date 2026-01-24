@@ -1,6 +1,7 @@
 package com.example.womery.service
 
 import com.example.womery.domain.model.QuickMemo
+import com.example.womery.exception.QuickMemoNotFoundException
 import com.example.womery.repository.QuickMemoRepository
 import io.mockk.every
 import io.mockk.mockk
