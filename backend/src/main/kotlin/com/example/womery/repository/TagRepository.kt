@@ -10,6 +10,7 @@ interface TagRepository {
     fun save(tag: Tag): Tag
     fun findById(id: UUID): Tag?
     fun findAll(): List<Tag>
+    fun findAllByIds(ids: List<UUID>): List<Tag>
     fun findByName(name: String): Tag?
     fun delete(id: UUID)
 }

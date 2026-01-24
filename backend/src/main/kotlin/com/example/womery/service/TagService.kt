@@ -48,10 +48,14 @@ class TagService(
     }
 
     fun setTagsForMemo(memoId: UUID, tagIds: List<UUID>) {
-        // Verify all tags exist
-        tagIds.forEach { tagId ->
-            tagRepository.findById(tagId)
-                ?: throw TagNotFoundException("Tag not found: $tagId")
+        // Verify all tags exist in a single query (fixes N+1 problem)
+        if (tagIds.isNotEmpty()) {
+            val tags = tagRepository.findAllByIds(tagIds)
+            val foundIds = tags.map { it.id }.toSet()
+            val missingIds = tagIds.filterNot { it in foundIds }
+            if (missingIds.isNotEmpty()) {
+                throw TagNotFoundException("Tags not found: $missingIds")
+            }
         }
 
         memoTagRepository.setTagsForMemo(memoId, tagIds)
