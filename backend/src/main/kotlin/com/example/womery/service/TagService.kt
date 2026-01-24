@@ -5,13 +5,15 @@ import com.example.womery.repository.MemoTagRepository
 import com.example.womery.repository.TagRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
 import java.util.UUID
 
 @Service
 @Transactional
 class TagService(
     private val tagRepository: TagRepository,
-    private val memoTagRepository: MemoTagRepository
+    private val memoTagRepository: MemoTagRepository,
+    private val clock: Clock = Clock.systemDefaultZone()
 ) {
     fun createTag(name: String): Tag {
         // Check if tag already exists
@@ -19,7 +21,7 @@ class TagService(
             throw TagAlreadyExistsException("Tag already exists: $name")
         }
 
-        val tag = Tag.create(name)
+        val tag = Tag.create(name, clock)
         return tagRepository.save(tag)
     }
 
@@ -70,7 +72,7 @@ class TagService(
 
     fun getOrCreateTag(name: String): Tag {
         return tagRepository.findByName(name) ?: run {
-            val tag = Tag.create(name)
+            val tag = Tag.create(name, clock)
             tagRepository.save(tag)
         }
     }

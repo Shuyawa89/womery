@@ -1,5 +1,6 @@
 package com.example.womery.domain.model
 
+import java.time.Clock
 import java.time.Instant
 import java.util.UUID
 
@@ -22,8 +23,8 @@ data class QuickMemo(
     }
 
     companion object {
-        fun create(content: String): QuickMemo {
-            val now = Instant.now()
+        fun create(content: String, clock: Clock = Clock.systemDefaultZone()): QuickMemo {
+            val now = Instant.now(clock)
             return QuickMemo(
                 id = UUID.randomUUID(),
                 content = content.trim(),
@@ -36,16 +37,16 @@ data class QuickMemo(
     val isDeleted: Boolean
         get() = deletedAt != null
 
-    fun updateContent(newContent: String): QuickMemo {
+    fun updateContent(newContent: String, clock: Clock = Clock.systemDefaultZone()): QuickMemo {
         return copy(
             content = newContent.trim(),
-            updatedAt = Instant.now()
+            updatedAt = Instant.now(clock)
         )
     }
 
-    fun softDelete(): QuickMemo {
+    fun softDelete(clock: Clock = Clock.systemDefaultZone()): QuickMemo {
         return copy(
-            deletedAt = Instant.now()
+            deletedAt = Instant.now(clock)
         )
     }
 

@@ -4,15 +4,17 @@ import com.example.womery.domain.model.QuickMemo
 import com.example.womery.repository.QuickMemoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
 import java.util.UUID
 
 @Service
 @Transactional
 class QuickMemoService(
-    private val quickMemoRepository: QuickMemoRepository
+    private val quickMemoRepository: QuickMemoRepository,
+    private val clock: Clock = Clock.systemDefaultZone()
 ) {
     fun createQuickMemo(content: String): QuickMemo {
-        val quickMemo = QuickMemo.create(content)
+        val quickMemo = QuickMemo.create(content, clock)
         return quickMemoRepository.save(quickMemo)
     }
 
@@ -36,7 +38,7 @@ class QuickMemoService(
         val existingMemo = quickMemoRepository.findById(id)
             ?: throw QuickMemoNotFoundException("QuickMemo not found: $id")
 
-        val updatedMemo = existingMemo.updateContent(content)
+        val updatedMemo = existingMemo.updateContent(content, clock)
         return quickMemoRepository.save(updatedMemo)
     }
 
@@ -44,7 +46,7 @@ class QuickMemoService(
         val existingMemo = quickMemoRepository.findById(id)
             ?: throw QuickMemoNotFoundException("QuickMemo not found: $id")
 
-        val deletedMemo = existingMemo.softDelete()
+        val deletedMemo = existingMemo.softDelete(clock)
         quickMemoRepository.save(deletedMemo)
     }
 
