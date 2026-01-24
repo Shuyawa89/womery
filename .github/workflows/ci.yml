@@ -83,9 +83,8 @@ jobs:
         working-directory: ./frontend
         run: pnpm lint
 
-      - name: Run tests (if available)
+      - name: Run tests
         working-directory: ./frontend
-        run: pnpm test || true
+        run: pnpm test -- --run
         env:
           CI: true
-        continue-on-error: true
