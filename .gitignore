@@ -1,0 +1,71 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/projects/
+.claude/cache/
+
+# Backend (Kotlin/Gradle)
+backend/build/
+backend/.gradle/
+backend/.idea/
+backend/*.iml
+backend/out/
+backend/generated/
+
+# Frontend (Next.js/Node)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/.turbo/
+frontend/.pnpm-store/
+frontend/pnpm-lock.yaml
+frontend/.env*.local
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Database
+*.db
+*.sqlite
+
+# Docker volumes
+docker-compose.override.yml
+
+# Session logs (keep directory structure but ignore content)
+claude-logs/*.md
+!claude-logs/.gitkeep
+
+# Build artifacts
+*.jar
+*.war
+*.class
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.cache/
